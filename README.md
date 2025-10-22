@@ -21,3 +21,4 @@
 8. host on home server via ngrok
 9. read up on kubernetes
 10. host via kubernetes
+11. make pretty readmefile with animations and architecture diagrams
