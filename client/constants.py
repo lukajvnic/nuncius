@@ -1,3 +1,4 @@
 VERSION = 0.1
 
 ALLOWED_CHARS = list("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,!?'-_")
+CHAT_HISTORY_LENGTH = 100

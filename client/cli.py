@@ -11,13 +11,28 @@ to continue:
 '''
 
 
+class Chat:
+    def __init__(self):
+        self.messages = []
+
+    def write(self, message: str):
+        if len(self.messages) >= CHAT_HISTORY_LENGTH:
+            self.messages.pop(0)
+
+        self.messages.append(message)
+    
+    def pull(self, num_lines: int) -> list[str]:
+        return self.messages[-num_lines:]
+
+
 @dataclass
 class Session:
     stdscr: object = None
     username: str = "loading..."
     online_users: int = 0
     input_buffer: list[str] = field(default_factory=list)  # list not shared across instances
-    last_input: str = ""
+    chat: Chat = field(default_factory=Chat)
+
     initialized = True
 
     def set_stdscr(self, stdscr):
@@ -38,9 +53,7 @@ def provide_session_information(username: str, online_users: int):
 
 
 def provide_message(username: str, timestamp: str, message: str):
-    formatted = f"[{timestamp}] {username}: {message}"
-    print(formatted)
-    ## session.chat.append_message(formatted)
+    SESSION.chat.write(f"[{timestamp}] {username}: {message}")
 
 
 ### END EXTERNAL FUNCTIONS ###
@@ -60,7 +73,7 @@ def handle_input():
         SESSION.input_buffer.append(ch)
     elif isinstance(ch, str) and bytes(ch, 'utf-8') == b'\x08' and SESSION.input_buffer:  # backspace
         SESSION.input_buffer.pop()
-    elif ch in ("\n", "\r"):  # enter
+    elif ch in ("\n", "\r") and SESSION.input_buffer:  # enter
         message = "".join(SESSION.input_buffer).strip()
 
         if message == "-e":
@@ -76,7 +89,7 @@ def draw_input():
     '''
     todo add line wrapping
     '''
-    
+
     input_str = "".join(SESSION.input_buffer)
     y = curses.LINES - 1
     try:
@@ -94,6 +107,20 @@ def draw_input():
         pass
 
 
+def draw_chat():
+    chat_lines = curses.LINES - 2  # leave space for header + input line
+    messages = SESSION.chat.pull(chat_lines)
+
+    start_y = 1  # below header
+    for i, message in enumerate(messages):
+        y = start_y + i
+        try:
+            SESSION.stdscr.addnstr(y, 0, message, curses.COLS - 1)
+        except curses.error:
+            # ignore drawing errors (resizes, etc.)
+            pass
+
+
 def main(stdscr):
     SESSION.set_stdscr(stdscr)
 
@@ -107,6 +134,7 @@ def main(stdscr):
     while True:
         stdscr.clear()
 
+        draw_chat()
         draw_header()
         draw_input()
 
