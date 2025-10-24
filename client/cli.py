@@ -1,7 +1,8 @@
 import curses
 import sys
-from dataclasses import dataclass
-
+from dataclasses import dataclass, field
+from constants import *
+import time
 
 '''
 to continue:
@@ -12,45 +13,116 @@ to continue:
 
 @dataclass
 class Session:
-    stdscr: object
+    stdscr: object = None
     username: str = "loading..."
     online_users: int = 0
+    input_buffer: list[str] = field(default_factory=list)  # list not shared across instances
+    last_input: str = ""
+    initialized = True
+
+    def set_stdscr(self, stdscr):
+        self.stdscr = stdscr
 
     @property
     def header(self) -> str:
-        return f"[ nuncius v0.1 -- {self.username} ] [ online -- {self.online_users} ] [ type -e to exit]"
-    
-
-def provide_session_information(session: Session, username: str, online_users: int):
-    session.username = username
-    session.online_users = online_users
+        return f"[ nuncius v{VERSION} -- {self.username} ] [ online -- {self.online_users} ] [ type -e to exit]"
 
 
-def provide_message(session: Session, username: str, timestamp: str, message: str):
+### START EXTERNAL FUNCTIONS ###
+
+
+def provide_session_information(username: str, online_users: int):
+    SESSION.username = username
+    SESSION.online_users = online_users
+    SESSION.initialized = True
+
+
+def provide_message(username: str, timestamp: str, message: str):
     formatted = f"[{timestamp}] {username}: {message}"
+    print(formatted)
     ## session.chat.append_message(formatted)
 
 
+### END EXTERNAL FUNCTIONS ###
 
-def draw_header(session: Session):
-    session.stdscr.addstr(0, 0, session.header)
+
+def draw_header():
+    SESSION.stdscr.addstr(0, 0, SESSION.header)
+
+
+def handle_input():
+    try:
+        ch = SESSION.stdscr.get_wch()  # get utf-8 character
+    except curses.error:
+        return False # no input, continue running
+
+    if ch in ALLOWED_CHARS:  # regular character input
+        SESSION.input_buffer.append(ch)
+    elif isinstance(ch, str) and bytes(ch, 'utf-8') == b'\x08' and SESSION.input_buffer:  # backspace
+        SESSION.input_buffer.pop()
+    elif ch in ("\n", "\r"):  # enter
+        message = "".join(SESSION.input_buffer).strip()
+
+        if message == "-e":
+            return True  # trigger exit
+
+        provide_message(SESSION.username, time.strftime("%H:%M:%S"), message)
+        SESSION.input_buffer.clear()
+
+    return False  # continue running
+
+
+def draw_input():
+    '''
+    todo add line wrapping
+    '''
+    
+    input_str = "".join(SESSION.input_buffer)
+    y = curses.LINES - 1
+    try:
+        # clear the input line, draw prompt + text (clipped to screen width)
+        SESSION.stdscr.move(y, 0)
+        SESSION.stdscr.clrtoeol()
+        SESSION.stdscr.addnstr(y, 0, f">{input_str}", curses.COLS - 1)
+
+        # place the cursor at the end of what's being typed (stay within bounds)
+        cur_x = min(1 + len(input_str), curses.COLS - 1)
+        curses.curs_set(1)
+        SESSION.stdscr.move(y, cur_x)
+    except curses.error:
+        # ignore drawing/move errors (resizes, etc.)
+        pass
 
 
 def main(stdscr):
-    curses.curs_set(0)
-    session = Session(stdscr)
+    SESSION.set_stdscr(stdscr)
 
-    start = time.time()
+    curses.curs_set(0)
+    stdscr.keypad(True)
+    stdscr.nodelay(True)
+
+    while not SESSION.initialized:
+        time.sleep(0.1)
 
     while True:
         stdscr.clear()
-        # h, w = stdscr.getmaxyx()
-        draw_header(session)
+
+        draw_header()
+        draw_input()
+
         stdscr.refresh()
 
+        exit = handle_input()
 
-if __name__ == "__main__":
-    try:
-        sys.exit(curses.wrapper(main) or 0)
-    except KeyboardInterrupt:
-        pass
+        if exit:
+            break
+
+    return 0
+
+
+SESSION = Session()
+
+try:
+    sys.exit(curses.wrapper(main) or 0)
+except KeyboardInterrupt:
+    pass
