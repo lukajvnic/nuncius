@@ -2,13 +2,8 @@ import curses
 import sys
 from dataclasses import dataclass, field
 from constants import *
-import time
-
-'''
-to continue:
- 1. implement input area
- 2. implement chat area
-'''
+from datetime import datetime
+from zoneinfo import ZoneInfo 
 
 
 class Chat:
@@ -46,9 +41,13 @@ class Session:
 ### START EXTERNAL FUNCTIONS ###
 
 
-def provide_session_information(username: str, online_users: int):
-    SESSION.username = username
+def provide_online_users(online_users: int):
     SESSION.online_users = online_users
+
+
+def provide_session_information(username: str, online_users: int):
+    provide_online_users(online_users)
+    SESSION.username = username
     SESSION.initialized = True
 
 
@@ -79,7 +78,7 @@ def handle_input():
         if message == "-e":
             return True  # trigger exit
 
-        provide_message(SESSION.username, time.strftime("%H:%M:%S"), message)
+        provide_message(SESSION.username, datetime.now(ZoneInfo("America/New_York")).strftime("%H:%M:%S"), message)
         SESSION.input_buffer.clear()
 
     return False  # continue running
@@ -150,7 +149,11 @@ def main(stdscr):
 
 SESSION = Session()
 
-try:
-    sys.exit(curses.wrapper(main) or 0)
-except KeyboardInterrupt:
-    pass
+def start():
+    try:
+        sys.exit(curses.wrapper(main) or 0)
+    except KeyboardInterrupt:
+        pass
+
+if __name__ == "__main__":
+    start()
