@@ -12,7 +12,7 @@
 
 ## Project flow
 1. ~~user interface essentially as an API that can be hooked up to a chatroom~~
-2. read up on kafka
+2. ~~read up on kafka~~
 3. test data transfer via kafka
 4. hook up kafka to UI, make chatroom work without encryption
 5. read up on RSA encryption
