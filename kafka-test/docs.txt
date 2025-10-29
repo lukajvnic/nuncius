@@ -1,0 +1,22 @@
+place to write down useful kafka-related commands:
+
+basic kafka project: https://medium.com/@obaff/building-a-sample-project-using-kafka-and-a-python-kafka-library-confluent-kafka-521bd48c9911
+running kafka server on windows: https://www.confluent.io/blog/set-up-and-run-kafka-on-windows-linux-wsl-2/
+
+--- WSL RELATED DOCUMENTATION --- 
+
+kafka is used within WSL @ /mnt/c/Users/lukaj/kafka_2.13-4.1.0
+
+kafka console producer (for testing)
+bin/kafka-console-producer.sh --topic test-topic --bootstrap-server localhost:9092
+
+kafka console consumer (for testing)
+in/kafka-console-consumer.sh --topic test-topic --from-beginning --bootstrap-server localhost:9092
+
+start kafka server
+bin/kafka-server-start.sh config/kraft/server.properties
+
+--- WINDOWS RELATED DOCUMENTATION ---
+
+test to see if kafka server is running (on windows)
+netstat -an | find "9092"
