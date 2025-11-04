@@ -2,4 +2,7 @@ import auth
 
 
 def main():
-    pass
+    auth.start_server()
+
+
+main()

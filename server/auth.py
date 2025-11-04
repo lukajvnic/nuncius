@@ -72,14 +72,19 @@ class Client(Thread):
             pass
 
 
-serversocket.listen(5)
-logging.info("Server started and listening")
-try:
-    while True:
-        try:
-            clientsocket, address = serversocket.accept()
-            clients.append(Client(clientsocket, address))
-        except Exception as e:
-            pass  # timeout, continue listening
-finally:
-    serversocket.close()
+def start_server():
+    serversocket.listen(5)
+    logging.info("Auth server - started & listening")
+    try:
+        while True:
+            try:
+                clientsocket, address = serversocket.accept()
+                clients.append(Client(clientsocket, address))
+            except Exception as e:
+                pass  # timeout, continue listening
+    finally:
+        serversocket.close()
+
+
+if __name__ == "__main__":
+    start_server()
