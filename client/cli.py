@@ -35,7 +35,7 @@ class Session:
 
     @property
     def header(self) -> str:
-        return f"[ nuncius v{VERSION} -- {self.username} ] [ online -- {self.online_users} ] [ type -e to exit]"
+        return f"[ {APP_NAME} v{VERSION} -- {self.username} ] [ online -- {self.online_users} ] [ type -e to exit]"
 
 
 ### START EXTERNAL FUNCTIONS ###

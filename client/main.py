@@ -2,14 +2,16 @@ import cli
 from threading import Thread
 import time
 from datetime import datetime
-from zoneinfo import ZoneInfo 
+from zoneinfo import ZoneInfo
+import login
 
 
 def main():
-    username = "jvnic"
-    online_users = 1
+    auth = login.handle_login()
+    if auth["status"] == 401:
+        return
 
-    cli.provide_session_information(username, online_users)
+    cli.provide_session_information(auth["username"], 1)
 
     thread = Thread(target=cli.start)
     thread.start()

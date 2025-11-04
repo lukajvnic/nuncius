@@ -8,13 +8,18 @@ running kafka server on windows: https://www.confluent.io/blog/set-up-and-run-ka
 kafka is used within WSL @ /mnt/c/Users/lukaj/kafka_2.13-4.1.0
 
 kafka console producer (for testing)
-bin/kafka-console-producer.sh --topic test-topic --bootstrap-server localhost:9092
+bin/kafka-console-producer.sh --topic <topic-name> --bootstrap-server localhost:9092
 
 kafka console consumer (for testing)
-in/kafka-console-consumer.sh --topic test-topic --from-beginning --bootstrap-server localhost:9092
+bin/kafka-console-consumer.sh --topic <topic-name> --from-beginning --bootstrap-server localhost:9092
 
 start kafka server
-bin/kafka-server-start.sh config/kraft/server.properties
+    KAFKA_CLUSTER_ID="$(bin/kafka-storage.sh random-uuid)"
+    bin/kafka-storage.sh format -t $KAFKA_CLUSTER_ID -c config/server.properties --standalone
+    bin/kafka-server-start.sh config/server.properties
+
+create kafka topic
+bin/kafka-topics.sh --create --topic <topic-name> --bootstrap-server localhost:9092
 
 --- WINDOWS RELATED DOCUMENTATION ---
 
