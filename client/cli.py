@@ -4,6 +4,8 @@ from dataclasses import dataclass, field
 from constants import *
 from datetime import datetime
 from zoneinfo import ZoneInfo 
+import time
+import producer
 
 
 class Chat:
@@ -28,6 +30,7 @@ class Session:
     input_buffer: list[str] = field(default_factory=list)  # list not shared across instances
     chat: Chat = field(default_factory=Chat)
 
+    killed: bool = False
     initialized = True
 
     def set_stdscr(self, stdscr):
@@ -78,7 +81,9 @@ def handle_input():
         if message == "-e":
             return True  # trigger exit
 
-        provide_message(SESSION.username, datetime.now(ZoneInfo("America/New_York")).strftime("%H:%M:%S"), message)
+        # provide_message(SESSION.username, datetime.now(ZoneInfo("America/New_York")).strftime("%H:%M:%S"), message)
+        producer.produce_message(SESSION.username, message)
+
         SESSION.input_buffer.clear()
 
     return False  # continue running
@@ -142,6 +147,7 @@ def main(stdscr):
         exit = handle_input()
 
         if exit:
+            SESSION.killed = True
             break
 
     return 0

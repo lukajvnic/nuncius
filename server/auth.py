@@ -8,7 +8,7 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-host = "10.39.73.37"
+host = "10.36.104.76"
 port = 5431
 serversocket.bind((host, port))
 serversocket.settimeout(1.0)

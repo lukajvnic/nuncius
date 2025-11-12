@@ -1,9 +1,9 @@
 import cli
 from threading import Thread
 import time
-from datetime import datetime
-from zoneinfo import ZoneInfo
 import login
+from constants import *
+import consumer
 
 
 def main():
@@ -13,13 +13,15 @@ def main():
 
     cli.provide_session_information(auth["username"], 1)
 
-    thread = Thread(target=cli.start)
-    thread.start()
+    cli_thread = Thread(target=cli.start)
+    cli_thread.start()
+    consumer_thread = Thread(target=consumer.consume_messages, args=[cli])
+    consumer_thread.start()
 
     while True:
-        time.sleep(5)
-        timestamp = datetime.now(ZoneInfo("America/New_York")).strftime("%H:%M:%S")
-        cli.provide_message("alice", timestamp, "whats up")
+        if not cli_thread.is_alive():
+            print(f"[{APP_NAME}] {CLIENT_CLOSING_MESSAGE}")
+            break
 
 
 if __name__ == "__main__":

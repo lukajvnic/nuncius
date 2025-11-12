@@ -5,25 +5,25 @@ import json
 
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect(("10.39.73.37", 5431))
+s.connect(("10.36.104.76", 5431))
 s.settimeout(5)
 
 
-def get_username():
+def get_username() -> str:
     return input(GET_USERNAME_MESSAGE).strip()
 
 
-def get_password():
+def get_password() -> str:
     return getpass.getpass(GET_PASSWORD_MESSAGE)
 
 
-def authenticate(username, password):
-    send_data = {
+def authenticate(username: str, password: str) -> int:
+    payload = {
         "username": username,
         "password": password
     }
 
-    s.send(bytes(json.dumps(send_data), "utf-8"))
+    s.send(bytes(json.dumps(payload), "utf-8"))
     recieved = json.loads(s.recv(RECV_BYTES).decode())
 
     return recieved.get("status")
