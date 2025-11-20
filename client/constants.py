@@ -11,5 +11,9 @@ LOGIN_DENIED_MESSAGE = "Invalid credentials."
 CLIENT_CLOSING_MESSAGE = "Shutting down client..."
 
 RECV_BYTES = 8192
+SERVER_ADDRESS = "172.22.144.1"
+SERVER_PORT = 5431
+
+KAFKA_BROKER_ADDRESS = "localhost:9092"
 
 MESSAGES_TOPIC = "messages"

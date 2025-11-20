@@ -9,7 +9,7 @@ import encryption
 def consume_messages(cli, privkey: encryption.Privkey):
     consumer = KafkaConsumer(
         MESSAGES_TOPIC,
-        bootstrap_servers="localhost:9092",
+        bootstrap_servers=KAFKA_BROKER_ADDRESS,
     )
 
     try:

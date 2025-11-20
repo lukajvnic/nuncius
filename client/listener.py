@@ -9,7 +9,7 @@ from datetime import datetime
 
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect(("172.22.144.1", 5431))
+s.connect((SERVER_ADDRESS, SERVER_PORT))
 s.settimeout(5)
 
 

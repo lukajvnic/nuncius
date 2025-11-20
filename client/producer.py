@@ -4,7 +4,7 @@ from constants import *
 import encryption
 import keys
 
-producer = KafkaProducer(bootstrap_servers='localhost:9092')
+producer = KafkaProducer(bootstrap_servers=KAFKA_BROKER_ADDRESS)
 
 
 def produce_message(username: str, message: str, maxlen: int):

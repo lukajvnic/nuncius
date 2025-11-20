@@ -1,15 +1,15 @@
 import socket
 import json
 from threading import *
-import time
+from constants import *
 import copy
 import logging
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-host = "172.22.144.1"
-port = 5431
+host = BIND_IPV4_ADDRESS
+port = BIND_PORT
 serversocket.bind((host, port))
 serversocket.settimeout(1.0)
 
