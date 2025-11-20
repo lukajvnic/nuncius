@@ -16,8 +16,8 @@
 3. ~~test data transfer via kafka~~
 4. ~~hook up kafka to UI, make chatroom work without encryption~~
 5. ~~read up on RSA encryption~~
-6. look into diffie-hellman exchange
-7. implement encryption
+6. ~~look into diffie-hellman exchange~~
+7. ~~implement encryption~~
 8. host on home server via ngrok
 9. read up on kubernetes
 10. host via kubernetes

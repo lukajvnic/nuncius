@@ -1,4 +1,4 @@
-VERSION = 0.1
+VERSION = "a0.2"
 APP_NAME = "nuncius"
 
 ALLOWED_CHARS = list("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,!?'-_")
@@ -8,7 +8,7 @@ GET_USERNAME_MESSAGE = "[nuncius] Username: "
 GET_PASSWORD_MESSAGE = "[nuncius] Password: "
 LOGIN_SUCCESS_MESSAGE = "Login successful."
 LOGIN_DENIED_MESSAGE = "Invalid credentials."
-CLIENT_CLOSING_MESSAGE = "Goodbye!"
+CLIENT_CLOSING_MESSAGE = "Shutting down client..."
 
 RECV_BYTES = 8192
 

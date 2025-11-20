@@ -48,10 +48,11 @@ def provide_online_users(online_users: int):
     SESSION.online_users = online_users
 
 
-def provide_session_information(username: str, online_users: int):
+def provide_session_information(username: str, online_users: int, maxlen: int):
     provide_online_users(online_users)
     SESSION.username = username
     SESSION.initialized = True
+    SESSION.maxlen = maxlen
 
 
 def provide_message(username: str, timestamp: str, message: str):
@@ -82,7 +83,7 @@ def handle_input():
             return True  # trigger exit
 
         # provide_message(SESSION.username, datetime.now(ZoneInfo("America/New_York")).strftime("%H:%M:%S"), message)
-        producer.produce_message(SESSION.username, message)
+        producer.produce_message(SESSION.username, message, SESSION.maxlen)
 
         SESSION.input_buffer.clear()
 
