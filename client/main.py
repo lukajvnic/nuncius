@@ -9,6 +9,7 @@ import keys
 
 
 def main():
+    keys.update_pubkeys({})
     pubkey, privkey = encryption.generate_keypair()
 
     auth = listener.handle_login(pubkey)
